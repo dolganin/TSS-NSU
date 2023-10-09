@@ -7,8 +7,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticD
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
-from tss import correl_table, file_loader, make_meshgrid, plot_contours, quadratic_linear_discriminant
-from sklearn import datasets
+from tss import correl_table, file_loader, make_meshgrid, plot_contours, get_class_data, get_prior, get_class_mean, get_class_covariance, train, plot_decision_boundary
 import pandas as pd
 
 
@@ -55,7 +54,7 @@ def ex_2_file_loader():
     target_names = df["Species"].unique()
     df = df.drop("Species", axis=1)
 
-    column = np.random.choice(df.columns, 2)
+    column = ["SepalWidthCm", "PetalWidthCm"]
     features = np.array(df.loc[:, column])
 
     return labels, target_names, features, column, df
@@ -138,23 +137,15 @@ def ex_3():
 
 
 def ex_4():
-    df = pd.read_csv("Iris.csv")
-    selected_x = ["SepalLengthCm", "PetalWidthCm", "Species"]
-    x = df[selected_x]
-    cls_lst = df["Species"].unique()
+    iris = pd.read_csv('Iris.csv')
+    iris_two = iris[["SepalWidthCm", "PetalWidthCm", "Species"]]
 
-    mean = x.groupby("Species").mean().to_numpy()
-    cov = x.groupby("Species").cov().to_numpy().reshape(len(cls_lst), -1)
-
-    classes = []
-    for i in range(len(cls_lst)):
-        classes.append([mean[i], cov[i].reshape(len(selected_x)-1, -1), np.linalg.inv(cov[i].reshape(len(selected_x)-1, -1))])
-
-    linear_discriminant = []
-    for i, cls in enumerate(cls_lst):
-        species = x[x["Species"] == cls].drop("Species", axis=1)
-        linear_discriminant.append(quadratic_linear_discriminant(species, classes[i][0], classes[i][1], classes[i][2]))
-
+    X = iris_two.drop(['Species'], axis=1)
+    y = iris_two['Species']
+    target_names = y.unique()
+    cls_data, prior, class_mean, class_cov, class_cov_inv, class_cov_det = train(y, X)
+    plot_decision_boundary(xtrain=X, ytrain=y, class_cov_det=class_cov_det, class_prior=prior, class_data=cls_data,
+                           class_mean=class_mean, class_cov_inv=class_cov_inv, target_names=target_names)
 
 
 
