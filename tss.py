@@ -2,6 +2,7 @@ import itertools
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn import model_selection
 
 def get_class_data(ytrain, xtrain):
     class_data = {}
@@ -146,3 +147,13 @@ class NaiveBayesClassifier:
             predictions.append(max_class)
 
         return predictions
+
+
+def lab_3_file_loader():
+    df = pd.read_csv("diabetes.csv")
+    y = df["Outcome"]
+    x = df.drop("Outcome", axis=1)
+
+    X_train, X_test, y_train, y_test = model_selection.train_test_split(x, y, test_size=0.2, random_state=42)
+
+    return X_train, X_test, y_train, y_test
