@@ -95,5 +95,54 @@ def correl_table(df, str_desc):
         coordinates.set_title(col)
     plt.show()
 
-def quadratic_linear_discriminant(x, mean, cov, inv_cov):
-   return -0.5 * (x - mean).to_numpy() @ inv_cov @ (x - mean).T - 0.5 * np.log(np.linalg.det(cov)) + np.log(0.5)
+
+class NaiveBayesClassifier:
+    def __init__(self, class_num):
+        self.class_num = class_num
+        self.class_prior = [0] * class_num
+        self.feature_probs = []
+
+    def train(self, X_train, y_train):
+        for y in y_train:
+            self.class_prior[y] += 1
+
+        for i in range(self.class_num):
+            total_count = sum([1 for y in y_train if y == i])
+            occurrence_count = [[0] * (np.max(X_train)+1) for _ in range(len(X_train[0]))]
+
+            for j in range(len(X_train)):
+                for k in range(len(X_train[j])):
+                    if y_train[j] == i:
+                        occurrence_count[k][X_train[j][k]] += 1
+
+            feature_prob = [[0] * (np.max(X_train)+1) for _ in range(len(X_train[0]))]
+
+            for j in range(len(occurrence_count)):
+                for k in range(len(occurrence_count[j])):
+                    feature_prob[j][k] = occurrence_count[j][k] / total_count
+
+            self.feature_probs.append(feature_prob)
+
+        total_samples = len(y_train)
+        self.class_prior = [count / total_samples for count in self.class_prior]
+
+    def predict(self, X_test):
+        predictions = []
+
+        for i in range(len(X_test)):
+            max_prob = float('-inf')
+            max_class = float('-inf')
+
+            for j in range(self.class_num):
+                prob = self.class_prior[j]
+
+                for k in range(len(X_test[i])):
+                    prob *= self.feature_probs[j][k][X_test[i][k]]
+
+                if prob > max_prob:
+                    max_prob = prob
+                    max_class = j
+
+            predictions.append(max_class)
+
+        return predictions
