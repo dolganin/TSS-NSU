@@ -16,7 +16,7 @@ def task_1():
 
     fig = plt.figure(figsize=(25, 20))
     _ = tree.plot_tree(model,
-                       feature_names=x.columns.tolist(),
+                       feature_names=X_test.columns.tolist(),
                        class_names=["Healthy", "Disease"],
                        filled=True)
 
@@ -31,7 +31,7 @@ def task_2():
     print(model.score(X_test, y_test))
 
     importance = model.feature_importances_
-    for i, feature in enumerate(x.columns):
+    for i, feature in enumerate(X_test.columns):
         print(f"Variable {feature} importance: {importance[i]}")
     # Получение списка построенных деревьев
     trees = model.estimators_
@@ -77,3 +77,4 @@ def task_5():
     plt.plot(x, y)
     plt.show()
 
+task_5()

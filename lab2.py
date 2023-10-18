@@ -103,3 +103,5 @@ def task_5():
 
     inverse_transform = np.exp(probabilities) / np.sum(np.exp(probabilities), axis=1).reshape(-1, 1)
     print(inverse_transform)
+
+task_5()
