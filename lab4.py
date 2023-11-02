@@ -47,7 +47,6 @@ def task_3():
     y_hot = ohot.fit_transform(x, y)
     y_targ = targ_encod.fit_transform(x, y)
 
-
     print(y_hot, y_targ)
 
 
@@ -57,7 +56,7 @@ def task_4():
     y = df["car"]
     x = df[["price", "mileage", "engV"]].fillna(0)
 
-    pcamodel = PCA(n_components=3)
+    pcamodel = PCA(n_components=2)
     pca = pcamodel.fit_transform(x)
 
     plt.bar(range(1, len(pcamodel.explained_variance_) + 1), pcamodel.explained_variance_)
@@ -70,9 +69,4 @@ def task_4():
     plt.legend(loc='upper left')
     plt.show()
 
-    plt.plot(pcamodel.explained_variance_ratio_)
-    plt.xlabel('number of components')
-    plt.ylabel('cumulative explained variance')
-    plt.show()
-
-
+task_4()

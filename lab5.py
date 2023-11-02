@@ -1,6 +1,3 @@
-import pandas as pd
-import sklearn.metrics
-
 from tss import lab_3_file_loader
 from sklearn import metrics
 from sklearn.metrics import roc_curve, precision_recall_curve, average_precision_score, \
